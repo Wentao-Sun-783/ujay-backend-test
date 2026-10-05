@@ -1,0 +1,24 @@
+@startuml
+
+left to right direction
+
+actor "Visiteur" as Visiteur
+actor "Administrateur" as Admin
+
+rectangle "uJay - Livrable 1" {
+
+    usecase "Accéder à la page d'accueil" as UC1
+    usecase "S'inscrire comme écrivain" as UC2
+    usecase "S'authentifier" as UC3
+    usecase "Créer un modérateur" as UC4
+    usecase "Voir les utilisateurs" as UC5
+}
+
+Visiteur --> UC1
+Visiteur --> UC2
+
+Admin --> UC3
+Admin --> UC4
+Admin --> UC5
+
+@enduml
