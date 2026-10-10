@@ -64,4 +64,58 @@ public class UserService {
 
         return true;
     }
+
+    public boolean authenticateAdmin(String username, String password) {
+
+        User user = userRepository.findById(username).orElse(null);
+
+        if (user == null) {
+            return false;
+        }
+
+        if (user.getRole() != Role.ADMINISTRATOR) {
+            return false;
+        }
+
+        return passwordEncoder.matches(password, user.getPassword());
+    }
+
+    public boolean addModerator(String username,
+                                String password,
+                                String phoneNumber) {
+
+        if (username == null || username.isBlank()) {
+            return false;
+        }
+
+        if (password == null || password.isBlank()) {
+            return false;
+        }
+
+        if (userRepository.existsById(username)) {
+            return false;
+        }
+
+        String hashedPassword = passwordEncoder.encode(password);
+
+        User moderator = new User(
+            username,
+            hashedPassword,
+            phoneNumber,
+            Role.MODERATOR
+        );
+
+        userRepository.save(moderator);
+
+        return true;
+    }
+
+    public List<User> getModeratorsAndWriters() {
+        return userRepository.findAll()
+                .stream()
+                .filter(user ->
+                        user.getRole() == Role.MODERATOR ||
+                        user.getRole() == Role.WRITER)
+                .toList();
+    }
 }
