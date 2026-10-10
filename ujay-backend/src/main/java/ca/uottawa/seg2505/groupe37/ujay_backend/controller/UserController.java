@@ -27,6 +27,12 @@ public class UserController {
     public int countUsers() {
         return userService.getAllUsers().size();
     }
+
+    @GetMapping("/api/users")
+    public List<User> getAllUsers() {
+        return userService.getAllUsers();
+    }
+
     
 @PostMapping("/api/register")
 public String registerUser(@RequestBody RegisterRequest request) {
