@@ -1,12 +1,15 @@
 
 package ca.uottawa.seg2505.groupe37.ujay_backend.controller;
 
+import java.util.List;
+
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import ca.uottawa.seg2505.groupe37.ujay_backend.model.RegisterRequest;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import ca.uottawa.seg2505.groupe37.ujay_backend.model.RegisterRequest;
+import ca.uottawa.seg2505.groupe37.ujay_backend.model.User;
 import ca.uottawa.seg2505.groupe37.ujay_backend.service.UserService;
 
 @RestController
