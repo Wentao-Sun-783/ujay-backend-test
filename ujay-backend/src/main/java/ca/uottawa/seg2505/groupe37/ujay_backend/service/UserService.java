@@ -1,68 +1,67 @@
-
 package ca.uottawa.seg2505.groupe37.ujay_backend.service;
 
-import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import ca.uottawa.seg2505.groupe37.ujay_backend.model.User;
 import ca.uottawa.seg2505.groupe37.ujay_backend.model.Role;
+import ca.uottawa.seg2505.groupe37.ujay_backend.model.User;
+import ca.uottawa.seg2505.groupe37.ujay_backend.repository.UserRepository;
 
 @Service
 public class UserService {
 
-    private List<User> users = new ArrayList<>();
-    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    public UserService() {
-        User admin = new User(
-            "admin",
-            "admin123",
-            null,
-            Role.ADMINISTRATOR
-        );
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = new BCryptPasswordEncoder();
 
-        users.add(admin);
+        if (!userRepository.existsById("admin")) {
+            User admin = new User(
+                "admin",
+                passwordEncoder.encode("admin-pwd"),
+                null,
+                Role.ADMINISTRATOR
+            );
+
+            userRepository.save(admin);
+        }
     }
 
     public List<User> getAllUsers() {
-        return users;
-    }
-    
-public boolean registerUser(String username, String password,
-                            String phoneNumber) {
-
-    // Verifier les champs obligatoires
-    if (username == null || username.isBlank()) {
-        return false;
+        return userRepository.findAll();
     }
 
-    if (password == null || password.isBlank()) {
-        return false;
-    }
+    public boolean registerUser(String username,
+                                String password,
+                                String phoneNumber) {
 
-    // Verifier si le nom d'utilisateur existe deja
-    for (User user : users) {
-        if (user.getUsername().equals(username)) {
+        if (username == null || username.isBlank()) {
             return false;
         }
+
+        if (password == null || password.isBlank()) {
+            return false;
+        }
+
+        if (userRepository.existsById(username)) {
+            return false;
+        }
+
+        String hashedPassword = passwordEncoder.encode(password);
+
+        User newUser = new User(
+            username,
+            hashedPassword,
+            phoneNumber,
+            Role.WRITER
+        );
+
+        userRepository.save(newUser);
+
+        return true;
     }
-// Hacher le mot de passe avant de creer l'utilisateur
-String hashedPassword = passwordEncoder.encode(password);
-    User newUser = new User(
-        username,
-        password,
-        phoneNumber,
-        Role.WRITER
-    );
-
-    users.add(newUser);
-
-    return true;
 }
-
-
-
-}
-

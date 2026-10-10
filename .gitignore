@@ -19,3 +19,4 @@ target/
 .env.production
 .env.development
 local.properties
+.vscode/
